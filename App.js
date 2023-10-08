@@ -2,8 +2,9 @@ import { StatusBar as ExpoStatusBar } from "expo-status-bar";
 import React from "react";
 import { StyleSheet, View, Text } from "react-native";
 
-import { NavigationContainer } from '@react-navigation/native';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { NavigationContainer } from "@react-navigation/native";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { Ionicons } from "@expo/vector-icons";
 
 import {
   useFonts as useOswald,
@@ -28,29 +29,33 @@ export default function App() {
   if (!oswaldLoaded || !latoLoaded) {
     return null;
   }
-  
-  const SettingsScreen = () => (
-    <SafeArea>
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-        <Text>Settings!</Text>
-      </View>
-    </SafeArea>
-  );
 
   const Tab = createBottomTabNavigator();
 
-  const Tabs = () => (
-    <Tab.Navigator>
-      <Tab.Screen name="Restaurants" component={RestaurantsScreen} />
-      <Tab.Screen name="Settings" component={SettingsScreen} />
-    </Tab.Navigator>
-  );
+  const TAB_ICON = {
+    Restaurants: "restaurant",
+    Placeholder: "ios-add-circle",
+    default: "code-sharp",
+  };
+
+  const screenOptions = ({ route }) => ({
+    tabBarIcon: ({ color, size }) => {
+      const iconName = TAB_ICON[route.name] ? TAB_ICON[route.name] : TAB_ICON["default"];
+      return <Ionicons name={iconName} size={size} color={color} />;
+    },
+    tabBarActiveTintColor: "tomato",
+    tabBarInactiveTintColor: "gray",
+  });
 
   return (
     <>
       <ThemeProvider theme={theme}>
         <NavigationContainer>
-          <Tabs />
+          <Tab.Navigator screenOptions={screenOptions}>
+            <Tab.Screen name="Restaurants" component={RestaurantsScreen} />
+            <Tab.Screen name="Placeholder" component={RestaurantsScreen} />
+            <Tab.Screen name="Placeholder2" component={RestaurantsScreen} />
+          </Tab.Navigator>
         </NavigationContainer>
       </ThemeProvider>
       <ExpoStatusBar />
